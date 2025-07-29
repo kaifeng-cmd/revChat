@@ -1,0 +1,69 @@
+﻿Question: Kenapa saya tidak boleh menonton selepas membuat bayaran?
+Answer:
+Kami menyarankan anda supaya mengikuti langkah-langkah berikut untuk mengaktifkan langganan anda selepas bayaran dilakukan:
+
+1. Klik pada ikon 'setting' pada bahagian atas sebelah kiri (telefon bimbit) aplikasi Tonton atau sebelah kanan (komputer) laman web (website) anda.
+
+2. Pilih Tetapan Aplikasi (App Settings) daripada menu.
+
+3. Klik butang Akaun (Account)
+
+4. Klik butang Pembaharuan Kelayakan (Refresh Entitlement)
+
+5. Tunggu sehingga tanda ✅
+
+6. Klik logo Tonton untuk kembali ke laman utama.
+
+Question: Saya telah melanggan tetapi kenapa masih mempunyai iklan?
+Answer: 
+Untuk makluman anda, langganan TontonUp memberikan anda akses untuk menonton filem dan drama eksklusif dan saluran TV premium yang hanya boleh didapati di aplikasi Tonton. Untuk menonton tanpa iklan, anda perlulah memilih salah satu daripada saluran TV premium dan bahan tontonan eksklusif yang bertanda logo TontonUp.
+
+Untuk cerita tontonan yang bertanda TontonUp, iklan hanya disiarkan pada episod pertama sehingga ke tiga bagi drama yang ditonton sahaja dan tidak akan mempunyai iklan pada episod seterus .
+
+
+
+
+
+Question: Bagaimana saya nak membatalkan langganan bulanan TontonUp saya?
+Answer:
+Untuk makluman, anda boleh membatalkan pembayaran berulang automatik anda pada Profil Tonton anda. Bagi rujukan mudah anda, berikut adalah langkah-langkah untuk membatalkan langganan TontonUp anda:
+
+Anda boleh menggunakan TELEFON BIMBIT atau DESKTOP melalui laman web (komputer).
+
+Telefon Bimbit
+1) Pergi ke Tetapan (Settings) > klik pada Akaun (Account) > Klik pada Pembaharuan Kelayakan (Refresh Entitlements) > Kemudian klik pada Urus Akaun (Manage account)
+2) Klik pada pelan langganan (Subscription Plan)
+3) Klik pada batalkan langganan berulang (Cancel Recurring Subscription)
+
+Laman Web (Website)
+1) Log masuk ke Akaun (Account) > Klik pada Tetapan (Settings) > Pilih Akaun (Account)
+2) Pergi ke pelan langganan (Subscription Plan)
+3) Klik pada batalkan langganan berulang (Cancel Recurring Subscription)
+
+Jika anda menghadapi masalah untuk membatalkan langganan anda, sila sertakan resit pembayaran terkini dan butiran berikut untuk kami menyemak dengan lebih lanjut dan melakukan pembatalan manual daripada sistem kami.
+
+Alamat E-mel Berdaftar:
+Nombor Telefon Berdaftar:
+
+Untuk makluman anda, permohonan pembatalan langganan hendaklah dilakukan selewat-lewatnya 5 hari sebelum tarikh tamat langganan anda.
+
+
+Question: Bagaimana saya nak menukar kata laluan?
+Answer: Kami mencadangkan anda untuk membuat tetapan semula kata laluan, kemudian log masuk semula.
+
+Anda boleh ke pautan di bawah bagi menetapkan semula kata laluan bagi akaun anda - https://oauth.revmedia.my/forgot?client_id=551835651455588&redirect_uri=https%3A%2F%2Fheadend-api.tonton.com.my%2Fv100%2Fapi%2Fauth.class.api.php%2Fcallback&response_type=code&code_challenge=DJfXvpi3ZqdivuoclgDAwSuLyMfyNwkz4cbtfzt_vU8&code_challenge_method=S256&state=TONTON_web.B3Wa0gmr3pAG8zKMqutaT2bXabyU01RB
+
+
+Question: Boleh saya melanggan apabila saya di luar negara Malaysia?
+Answer:  Untuk makluman, platform kami hanya boleh di tonton di Malaysia sahaja pada ketika ini.
+
+
+Question: Mengapa ralat muncul di skrin semasa saya menikmati Tonton? 
+Answer: Jika anda ingin mengaktifkan semula langganan untuk kandungan eksklusif, anda boleh melawati pautan ini https://www.tonton.com.my/tontonup untuk menaik taraf akaun anda. Sebaik sahaja anda mengklik pautan, anda akan melihat halaman yang menunjukkan ruangan "SUBSCRIBE NOW".
+
+Sila klik ke ruangan "SUBSCRIBE NOW" di bahagian ATAS sekali untuk meneruskan proses langganan dan pembayaran.
+
+Sila pilih kaedah pembayaran pilihan anda dan ikuti arahan seterusnya di dalam Langkah 2.
+
+Sebaik sahaja anda telah membuat pembayaran langganan, kami mencadangkan anda untuk klik butang Pembaharuan
+
