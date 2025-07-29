@@ -8,6 +8,7 @@ from huggingface_hub import InferenceClient
 from pathlib import Path
 from typing import List
 import chromadb
+from langchain.docstore.document import Document
 
 # define embedding class
 class CustomHuggingFaceEmbeddings(Embeddings):
@@ -31,10 +32,12 @@ embedding_function = CustomHuggingFaceEmbeddings()
 
 # Initialize inference client
 inference_client = InferenceClient(
-    provider="featherless-ai",
+    provider="fireworks-ai",
     api_key=os.environ.get("HF_TOKEN"),
     #model="google/gemma-3-27b-it"
-    model="Qwen/Qwen2.5-14B-Instruct"
+    #model="Qwen/Qwen2.5-14B-Instruct"
+    #model="meta-llama/Llama-3.3-70B-Instruct"
+    model="meta-llama/Llama-3.1-8B-Instruct"
 )
 
 # Load documents
@@ -50,21 +53,53 @@ def load_documents(doc_path: str) -> str:
         print(f"Warning: Unsupported file type '{doc_path.suffix}'. Only '.txt' files are processed.")
     return text
 
-# Split documents
-def split_documents(text: str) -> List[str]:
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=600,
-        chunk_overlap=100
-    )
-    return text_splitter.split_text(text)
+# Q&A parser
+def parse_qna_file(filepath):
+    with open(filepath, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    chunks = []
+    current_question = None
+    current_answer_lines = []
+    qid = 1
+
+    for line in lines:
+        stripped = line.strip()
+
+        if stripped.startswith("Question:"):
+            # save previous pair
+            if current_question and current_answer_lines:
+                content = f"{current_question}\nAnswer: " + "\n".join(current_answer_lines).strip()
+                chunks.append({
+                    "content": content,
+                    "metadata": {"id": f"q{qid}"}
+                })
+                qid += 1
+                current_answer_lines = []
+
+            current_question = stripped  # keep original Question: ... line
+
+        elif stripped.startswith("Answer:"):
+            current_answer_lines = [stripped[len("Answer:"):].strip()]
+        else:
+            if current_question:
+                current_answer_lines.append(line.rstrip())
+
+    # last pair
+    if current_question and current_answer_lines:
+        content = f"{current_question}\nAnswer: " + "\n".join(current_answer_lines).strip()
+        chunks.append({
+            "content": content,
+            "metadata": {"id": f"q{qid}"}
+        })
+
+    return chunks
 
 # Initialize or load Chroma collection
 def initialize_vectorstore(doc_path: str, collection_name: str = "rev_collection") -> Chroma:
     persist_directory = "./app/data/chroma"
     client = chromadb.PersistentClient(path=persist_directory)
-    
     try:
-        # Try to load existing collection
         vectorstore = Chroma(
             client=client,
             collection_name=collection_name,
@@ -77,19 +112,16 @@ def initialize_vectorstore(doc_path: str, collection_name: str = "rev_collection
             print(f"Collection '{collection_name}' is empty, re-creating...")
     except Exception:
         print(f"Collection '{collection_name}' does not exist, creating new one...")
-    
-    # If collection does not exist or is empty, create new one
-    print(f"Loading documents from {doc_path}...")
-    text = load_documents(doc_path)
-    if not text:
-        raise ValueError(f"Failed to load text from {doc_path}. The file might be empty or in a wrong format.")
 
-    print("Splitting documents...")
-    chunks = split_documents(text)
-    
+    print(f"Loading Q&A pairs from {doc_path}...")
+    qa_chunks = parse_qna_file(doc_path)
+    docs = [Document(page_content=chunk["content"], metadata=chunk["metadata"]) for chunk in qa_chunks]
+    print("Docs to be stored in Chroma:")
+    for doc in docs:
+        print(f"ID: {doc.metadata['id']}\n{doc.page_content}\n{'-'*40}")
     print(f"Creating new vectorstore '{collection_name}'...")
-    vectorstore = Chroma.from_texts(
-        texts=chunks,
+    vectorstore = Chroma.from_documents(
+        documents=docs,
         embedding=embedding_function,
         collection_name=collection_name,
         client=client
@@ -101,11 +133,15 @@ def initialize_vectorstore(doc_path: str, collection_name: str = "rev_collection
 def create_rag_chain(vectorstore: Chroma) -> RunnableSequence:
     prompt_template = PromptTemplate(
         input_variables=["context", "question"],
-        template="Berdasarkan maklumat berikut (jangan jawab jika maklumat tiada): {context}\nSoalan: {question}\nJawapan:"
+        template="""Berdasarkan maklumat berikut (jangan jawab jika maklumat tiada): {context}
+        \nSoalan: {question}
+        \nJawapan: 
+        \nKalau maklumat ada link, juga bagi link tersebut.
+        """
     )
     
     def retrieve_context(question: str) -> str:
-        results = vectorstore.similarity_search(question, k=3)
+        results = vectorstore.similarity_search(question, k=2)
         return results[0].page_content if results else ""
 
     def generate_answer(inputs: dict) -> str:
@@ -144,7 +180,8 @@ def main():
     rag_chain = create_rag_chain(vectorstore)
     
     # User query
-    question = "Bagaimana saya nak membatalkan langganan bulanan TontonUp saya?"
+    #question = "I nak batalkan langganan bulanan TontonUp saya, macam mana?"
+    question = "Knp i xboleh tengok selepas buat bayaran?"
     answer = rag_chain.invoke({"question": question})
     print(f"Soalan: {question}\nJawapan: {answer}")
 
