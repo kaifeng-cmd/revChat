@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List
 import chromadb
 from langchain.docstore.document import Document
+import re
 
 # define embedding class
 class CustomHuggingFaceEmbeddings(Embeddings):
@@ -56,43 +57,22 @@ def load_documents(doc_path: str) -> str:
 # Q&A parser
 def parse_qna_file(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
-        lines = f.readlines()
+        content = f.read()
+
+    # Split the text before each line that starts with "Question:"
+    raw_chunks = re.split(r'(?m)(^Question:.*)', content)
 
     chunks = []
-    current_question = None
-    current_answer_lines = []
-    qid = 1
 
-    for line in lines:
-        stripped = line.strip()
-
-        if stripped.startswith("Question:"):
-            # save previous pair
-            if current_question and current_answer_lines:
-                content = f"{current_question}\nAnswer: " + "\n".join(current_answer_lines).strip()
-                chunks.append({
-                    "content": content,
-                    "metadata": {"id": f"q{qid}"}
-                })
-                qid += 1
-                current_answer_lines = []
-
-            current_question = stripped  # keep original Question: ... line
-
-        elif stripped.startswith("Answer:"):
-            current_answer_lines = [stripped[len("Answer:"):].strip()]
-        else:
-            if current_question:
-                current_answer_lines.append(line.rstrip())
-
-    # last pair
-    if current_question and current_answer_lines:
-        content = f"{current_question}\nAnswer: " + "\n".join(current_answer_lines).strip()
-        chunks.append({
-            "content": content,
-            "metadata": {"id": f"q{qid}"}
-        })
-
+    for i in range(1, len(raw_chunks), 2):
+        # Combine the "Question:..." line with the following answer
+        qna_pair = (raw_chunks[i] + raw_chunks[i+1]).strip()
+        if qna_pair:
+            chunks.append({
+                "content": qna_pair,
+                "metadata": {"id": f"q{len(chunks) + 1}"}
+            })
+            
     return chunks
 
 # Initialize or load Chroma collection

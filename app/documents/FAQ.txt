@@ -1,4 +1,5 @@
-﻿Question: Kenapa saya tidak boleh menonton selepas membuat bayaran?
+﻿
+Question: Kenapa saya tidak boleh menonton selepas membuat bayaran?
 Answer:
 Kami menyarankan anda supaya mengikuti langkah-langkah berikut untuk mengaktifkan langganan anda selepas bayaran dilakukan:
 
