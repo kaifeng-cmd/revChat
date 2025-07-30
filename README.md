@@ -16,12 +16,11 @@ Instead of using the Hugging Face `transformers` library (which requires downloa
 
 Screenshots of conversations:
 
-![a](app/screenshot/182936.png)
+![a](app/screenshot/183055.png)
 
-![b](app/screenshot/183031.png)
+![b](app/screenshot/182936.png)
 
-![c](app/screenshot/183055.png)
-
+![c](app/screenshot/183031.png)
 
 ## Setup & Usage (GitHub Repo)
 
