@@ -10,8 +10,15 @@ from typing import List
 import chromadb
 from langchain.docstore.document import Document
 import re
+import streamlit as st
+from dotenv import load_dotenv
 
-# define embedding class
+load_dotenv()
+
+# Self-defined embedding class
+# becuz I don't directly download the embedding model from huggingface
+# or use paid service provider embedding model
+# I use the huggingface inference client to get the embedding
 class CustomHuggingFaceEmbeddings(Embeddings):
     def __init__(self, model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"):
         self.client = InferenceClient(
@@ -33,26 +40,15 @@ embedding_function = CustomHuggingFaceEmbeddings()
 
 # Initialize inference client
 inference_client = InferenceClient(
+    # provider="featherless-ai",
     provider="fireworks-ai",
     api_key=os.environ.get("HF_TOKEN"),
     #model="google/gemma-3-27b-it"
     #model="Qwen/Qwen2.5-14B-Instruct"
+    #model="Qwen/Qwen2.5-1.5B-Instruct"
     #model="meta-llama/Llama-3.3-70B-Instruct"
     model="meta-llama/Llama-3.1-8B-Instruct"
 )
-
-# Load documents
-def load_documents(doc_path: str) -> str:
-    doc_path = Path(doc_path)
-    text = ""
-    if doc_path.suffix == ".txt":
-        with open(doc_path, "r", encoding="utf-8") as f:
-            text = f.read()
-    elif not doc_path.exists():
-        print(f"Error: Document not found at {doc_path}")
-    else:
-        print(f"Warning: Unsupported file type '{doc_path.suffix}'. Only '.txt' files are processed.")
-    return text
 
 # Q&A parser
 def parse_qna_file(filepath):
@@ -150,20 +146,41 @@ def create_rag_chain(vectorstore: Chroma) -> RunnableSequence:
     )
     return chain
 
-def main():
+# Streamlit chat UI
+def streamlit_chat():
+    st.set_page_config(page_title="RAG Chatbot", page_icon="🤖")
+    st.title("RAG Chatbot Demo")
+
     doc_path = "app/documents/FAQ.txt"
-
-    # for Chroma
     vectorstore = initialize_vectorstore(doc_path)
-
-    # for RAG
     rag_chain = create_rag_chain(vectorstore)
-    
-    # User query
-    #question = "I nak batalkan langganan bulanan TontonUp saya, macam mana?"
-    question = "Knp i xboleh tengok selepas buat bayaran?"
-    answer = rag_chain.invoke({"question": question})
-    print(f"Soalan: {question}\nJawapan: {answer}")
+
+    # Streamlit chat interface
+    st.write("Hi, sila tanya soalan anda di bawah:")
+    user_input = st.chat_input("Taip soalan anda...")
+    if user_input:
+        with st.chat_message("user"):
+            st.markdown(user_input)
+        with st.chat_message("assistant"):
+            answer = rag_chain.invoke({"question": user_input})
+            st.markdown(answer)
+
+    """
+    Contoh soalan:
+    \nI nak batalkan langganan bulanan TontonUp saya, macam mana?
+    \nKnp i xboleh tengok selepas buat bayaran?
+    """
+
+#ignore, for my CLI testing only
+# def main():
+#     doc_path = "app/documents/FAQ.txt"
+#     vectorstore = initialize_vectorstore(doc_path)
+#     rag_chain = create_rag_chain(vectorstore)
+#     #question = "I nak batalkan langganan bulanan TontonUp saya, macam mana?"
+#     #question = "Knp i xboleh tengok selepas buat bayaran?"
+#     question = "Bagaimana saya nak membatalkan langganan bulanan TontonUp saya?"
+#     answer = rag_chain.invoke({"question": question})
+#     print(f"Soalan: {question}\nJawapan: {answer}")
 
 if __name__ == "__main__":
-    main()
+    streamlit_chat()
