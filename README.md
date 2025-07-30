@@ -1,15 +1,12 @@
-#RevChatbot: ARAG Chatbot Demo
----
-
 ## What I Built
 
 This project is a Retrieval-Augmented Generation (RAG) chatbot, hosted on [Hugging Face Spaces](https://huggingface.co/spaces/KaiSKX/revChatbot). The chatbot uses open source LLMs from Hugging Face, not closed LLM service providers (which require payment). 
 
 Instead of using the Hugging Face `transformers` library (which requires downloading large LLMs to local disk and need GPU), I use the Hugging Face Inference Client API. This allows me to run everything on CPU and easily switch between different LLMs on Hugging Face for testing, without downloading huge size models. Both the embedding model and the LLM are accessed via the Inference Client.
 
-## Challenges
+## Challenges & Solutions
 
-- **Limited Free Quota:** Hugging Face gives free users $0.10 every month credit for the Inference Client. I have already used $0.09 for debugging, so the provided Hugging Face Space may only work for a few more requests. Luckily, the quota $0.10 will refresh on August 1st.
+- **Limited Free Quota:** Hugging Face gives free users $0.10 every month credit for the Inference Client. I have already used $0.09 for debugging and testing with different LLMs, so the provided Hugging Face Space may only work for a few more requests. Luckily, the quota $0.10 will refresh on August 1st.
 - **Model Size and Speed:** Large parameter open source LLMs are slow to generate each response, especially without a GPU. This makes debugging and testing more time-consuming.
 - **Switching Models:** I also want to try different LLMs and embedding models easily, so using the Inference Client was ideal for this case for just demo.
 - **Document Splitting:** Initially, I used fixed-length chunking with overlap, but the results were not satisfied. I switched to splitting each Q&A pair as a chunk, which works much better.
@@ -17,17 +14,17 @@ Instead of using the Hugging Face `transformers` library (which requires downloa
 
 ## Example Dialogues
 
-Screenshots of some example conversations:
-![a](app/screenshot/Screenshot 2025-07-30 182936.png)
+Screenshots of conversations:
 
-![b](app/screenshot/Screenshot 2025-07-30 183031.png)
+![a](app/screenshot/182936.png)
 
-![c](app/screenshot/Screenshot 2025-07-30 183055.png)
+![b](app/screenshot/183031.png)
+
+![c](app/screenshot/183055.png)
 
 
-## Setup & Usage
+## Setup & Usage (GitHub Repo)
 
-- **GitHub Repo:**
 - The provided `Dockerfile` is specific for Hugging Face Spaces deployment.
 - To run locally (without Docker):
 ```bash
@@ -65,4 +62,4 @@ HF_TOKEN="your_huggingface_token"
 
 ---
 
-This project is a demo to showcase RAG chatbot logic and UI. Because of my free quota limit, the Hugging Face Space I provided may not always be available for testing.
+Note: This project is a demo to showcase RAG chatbot logic and UI. Because of my free quota limit, the Hugging Face Space I provided may not always be available for testing.
